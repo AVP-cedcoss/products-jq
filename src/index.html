@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Products</title>
+    <link href="style.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+</head>
+<body>
+	<div id="wrapper">
+		<div id="add_product_form">
+			<label for="product_sku">
+				<span>Product SKU</span> 
+				<input type="text" name="product_sku" id="product_sku" required>
+			</label>
+			<label for="product_name">
+				<span>Product Name</span> 
+				<input type="text" name="product_name" id="product_name" required>
+			</label>
+			<label for="product_price">
+				<span>Product Price</span> 
+				<input type="text" name="product_price" id="product_price" required>
+			</label>
+			<label for="product_quantity">
+				<span>Product Quantity</span> 
+				<input type="text" name="product_quantity" id="product_quantity" required>
+			</label>
+			<p class="submit">
+				<button id="add-Product">Add Product
+				</button>
+			</p>
+		</div>
+
+		<div id="notification">
+			<div class="success">Product Added Successfully.<a href="#" class="close fa" style="font-size:16px;">&#xf00d;</a></div>
+			<div class="error" >There is some problem.<a href="#" class="close fa" style="font-size:16px">&#xf00d;</a></div>
+		</div>
+		<div id="footer">
+			<table id="f-head">
+			</table>
+		</div>
+	</div>
+	<script src="script.js"></script>
+</body>
+</html>
