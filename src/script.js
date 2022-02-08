@@ -37,6 +37,7 @@ $(document).ready(function()
 });
 
 let prodList = [];  //Global Object Array
+let ERROR = []; //Global Error List
 let editOn = false; //Flag to check if Edit is being done
 
 // on click Add Product Button
@@ -57,9 +58,17 @@ function pullValue()
     
     if (pId == "" || pName == "" || pPrice == "" || quantity == "")
     {
-        alert("Please enter values into the required field");
-        $(document).ready(function(){
+        var e = "Field(s) is/are empty.";
+        ERROR.push(e);
+        $(document).ready(function()
+        {
             $('.error').show();
+        });
+        e += '<a href="#" class="close fa" style="font-size:16px">&#xf00d;</a>'
+        $(document).ready(function(){
+            $('.error').html(
+                e
+            )
         });
         return;
     }
@@ -85,9 +94,17 @@ function pushData(pId, pName, pPrice, quantity)
         if ((prodList[x].PID == pId) && (editOn == false))
         {
             //If Exists in the Array. Alert the User and return.
-            alert("Product ID already in the List.");
-            $(document).ready(function(){
+            var e = "SKU Already Exists.";
+            ERROR.push(e);
+            $(document).ready(function()
+            {
                 $('.error').show();
+            });
+            e += '<a href="#" class="close fa" style="font-size:16px">&#xf00d;</a>'
+            $(document).ready(function(){
+                $('.error').html(
+                e
+                )
             });
             return;
         }
