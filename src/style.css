@@ -64,3 +64,9 @@ body{
 #footer table th{
 	text-align: left;
 }
+
+a
+{
+	text-decoration: none;
+	color: black;
+}

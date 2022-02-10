@@ -51,61 +51,49 @@ function submitForm()
 //Pull Value from the Form
 function pullValue()
 {
-    var pId = document.getElementById("product_sku").value;
-    var pName = document.getElementById("product_name").value;
-    var pPrice = document.getElementById("product_price").value;
-    var quantity = document.getElementById("product_quantity").value;
+    var SKU = $("#product_sku").val();
+    var productName = $("#product_name").val();
+    var productPrice = $("#product_price").val();
+    var quantity = $("#product_quantity").val();
     
-    if (pId == "" || pName == "" || pPrice == "" || quantity == "")
+    if (fieldCheck(SKU, productName, productPrice, quantity) == false)
     {
-        var e = "Field(s) is/are empty.";
-        ERROR.push(e);
-        $(document).ready(function()
-        {
-            $('.error').show();
-        });
-        e += '<a href="#" class="close fa" style="font-size:16px">&#xf00d;</a>'
-        $(document).ready(function(){
-            $('.error').html(
-                e
-            )
-        });
-        return;
+        //Pushing the Data to the Object Array
+        pushData(SKU, productName, productPrice, quantity);
     }
-    //Pushing the Data to the Object Array
-    pushData(pId, pName, pPrice, quantity);
+}
+
+function fieldCheck(SKU, productName, productPrice, quantity)
+{
+    if (SKU == "" || productName == "" || productPrice == "" || quantity == "")
+    {
+        ERROR.push("All Fields cannot be empty.");
+        errorChangeAndDisplay("All Fields cannot be empty.");
+        return true;
+    }
+    return false;
 }
 
 //Clear Input Fields
 function clearFields()
 {
-    document.getElementById("product_sku").value = '';
-    document.getElementById("product_name").value = '';
-    document.getElementById("product_price").value = '';
-    document.getElementById("product_quantity").value = '';
+    $("#product_sku").val("");
+    $("#product_name").val("");
+    $("#product_price").val("");
+    $("#product_quantity").val("");
 }
 
 //Adding data to the Object Array
-function pushData(pId, pName, pPrice, quantity)
+function pushData(SKU, productName, productPrice, quantity)
 {
     //Checking if the Product ID already Exists in the Array
     for (var x = 0; x < prodList.length; x++)
     {
-        if ((prodList[x].PID == pId) && (editOn == false))
+        if ((prodList[x].SKU == SKU) && (editOn == false))
         {
             //If Exists in the Array. Alert the User and return.
-            var e = "SKU Already Exists.";
-            ERROR.push(e);
-            $(document).ready(function()
-            {
-                $('.error').show();
-            });
-            e += '<a href="#" class="close fa" style="font-size:16px">&#xf00d;</a>'
-            $(document).ready(function(){
-                $('.error').html(
-                e
-                )
-            });
+            ERROR.push("SKU Already Exists.");
+            errorChangeAndDisplay("SKU Already Exists.");
             return;
         }
     }
@@ -116,14 +104,24 @@ function pushData(pId, pName, pPrice, quantity)
         //finding the location of the Object in the Array
         for (var x = 0; x < prodList.length; x++)
         {
-            if (prodList[x].PID == pId)
+            if (prodList[x].SKU == SKU)
             {
-                prodList[x].PName = pName;
-                prodList[x].PPrice = pPrice;
-                prodList[x].Quantity = quantity;
+                //Changing the Value of Object
+                prodList[x].productName = productName;
+                prodList[x].productPrice = productPrice;
+                prodList[x].quantity = quantity;
+
+                //Removing Edit Flag
                 editOn = false;
-                document.getElementById("product_sku").disabled = false;
-                document.getElementById("add-Product").innerHTML = "Add Product";
+
+                //Enabling the SKU input Field
+                $("#product_sku").prop('disabled', false);
+
+                //Changing Button Text
+                $("#add-Product").html("Add Product");
+
+                //Display Success Function
+                successChangeAndDisplay("Update Successful");
                 return;         
             }
         }
@@ -132,85 +130,66 @@ function pushData(pId, pName, pPrice, quantity)
     //If Doesn't Exist then push onto the Array
     let prod = 
     {
-        "PID": pId,
-        "PName": pName,
-        "PPrice": pPrice,
-        "Quantity": quantity
+        "SKU": SKU,
+        "productName": productName,
+        "productPrice": productPrice,
+        "quantity": quantity
     };
 
     // Pushing to the Object Array
     prodList.push(prod);
-    $(document).ready(function(){
-        $('.success').show();
-    });
-}
 
-//Fetch Data from Object Array
-function fetch(item)
-{
-    // Temp Array to store and return the Data for Individual Objects
-    var out = [];
-    out.push(item.PID);
-    out.push(item.PName);
-    out.push(item.PPrice);
-    out.push(item.Quantity);
-    return out;
+    //Successful Display Function
+    successChangeAndDisplay("Product Added Successfully");
 }
 
 //Display Function
 function display()
-{
-    //Accessing Table Element in HTML
-    var table = document.getElementById('f-head');
-    
+{    
     //Tempororary Variable to Add Rows
-    var html = "";
-
-    //Clearing the Table
-    table.innerHTML = "";
-
-    //Table Header
-    table.innerHTML += '<tr>\
-            <th>SKU\</th>\
-            <th>Name\</th>\
-            <th>Price\</th>\
-            <th>Quantity\</th>\
-            <th>Action\</th>\
-        </tr>';
+    var html = '<tr>\
+                    <th>SKU\</th>\
+                    <th>Name\</th>\
+                    <th>Price\</th>\
+                    <th>Quantity\</th>\
+                    <th>Action\</th>\
+                </tr>';
 
     //Fetching the rows in Product List Array
-    for (let item of prodList)
+    for (var i = 0; i < prodList.length; i++)//let item of prodList)
     {
-        //Fetching each Object one after another
-        out = fetch(item);
-
         html += '<tr>\
-            <td>'+out[0]+'\</td>\
-            <td>'+out[1]+'\</td>\
-            <td>'+out[2]+'\</td>\
-            <td>'+out[3]+'\</td>\
-            <td style="font-size:16px; padding-right: 6px;" class="fa"><a href="#" onclick="editForm('+out[0]+')">&#xf040;</a>\</td>\
-            <td style="font-size:20px" class="fa"><a href="#" onclick="delForm('+out[0]+')">&#xf00d;</a>\</td>\
+            <td>'+prodList[i].SKU+'\</td>\
+            <td>'+prodList[i].productName+'\</td>\
+            <td>'+prodList[i].productPrice+'\</td>\
+            <td>'+prodList[i].quantity+'\</td>\
+            <td style="font-size:16px; padding-right: 6px;" class="fa"><a href="#" onclick="editForm('+prodList[i].SKU+')">&#xf040;</a>\</td>\
+            <td style="font-size:20px" class="fa"><a href="#" onclick="delForm('+prodList[i].SKU+')">&#xf00d;</a>\</td>\
         </tr>';
     }
-    //Adding Rows to Table
-    table.innerHTML += html;
+
+    //Adding content to Table
+    $("#f-head").html(html);
 }
 
 function editForm(id)
 {
     for (var i = 0; i < prodList.length; i++)
     {
-        if (prodList[i].PID == id)
+        if (prodList[i].SKU == id)
         {
-            document.getElementById("product_sku").value = prodList[i].PID;
-            document.getElementById("product_sku").disabled = true;
-            document.getElementById("product_name").value = prodList[i].PName;
-            document.getElementById("product_price").value = prodList[i].PPrice;
-            document.getElementById("product_quantity").value = prodList[i].Quantity;
+            $("#product_sku").val(prodList[i].SKU);
+            $("#product_name").val(prodList[i].productName);
+            $("#product_price").val(prodList[i].productPrice);
+            $("#quantity").val(prodList[i].quantity);
+            
+            //Disabling the SKU Field
+            $("#product_sku").prop("disabled", true);
 
-            document.getElementById("add-Product").innerHTML = "Edit Product";
+            //Changing the Button Value
+            $("#add-Product").html("Edit Product");
 
+            //Setting the Edit Flag Value
             editOn = true;
         }
     }
@@ -222,12 +201,44 @@ function delForm(id)
     var conf = confirm("Are you sure you want to Delete?");
     while ((i >= 0) && conf == true)
     {
-        if (prodList[i].PID == id)
+        if (prodList[i].SKU == id)
         {
             prodList.splice(i,1);
         }
         i-=1;
     }
+    
+    //Display Function
     display();
-    alert("Entry Successfully Deleted");
+
+    //Success Message
+    successChangeAndDisplay("Entry Deleted Successfully");
+}
+
+//Change Error and Display
+function errorChangeAndDisplay(e)
+{
+    $(document).ready(function()
+    {
+        $('.error').show();
+    });
+    e += '<a href="#" class="close fa" style="font-size:16px">&#xf00d;</a>';
+    $(document).ready(function()
+    {
+        $('.error').html(e)
+    });
+}
+
+//Change Success and Display
+function successChangeAndDisplay(e)
+{
+    $(document).ready(function()
+    {
+        $('.success').show();
+    });
+    e += '<a href="#" class="close fa" style="font-size:16px">&#xf00d;</a>';
+    $(document).ready(function()
+    {
+        $('.success').html(e)
+    });
 }
