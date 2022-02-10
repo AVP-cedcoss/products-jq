@@ -181,7 +181,7 @@ function editForm(id)
             $("#product_sku").val(prodList[i].SKU);
             $("#product_name").val(prodList[i].productName);
             $("#product_price").val(prodList[i].productPrice);
-            $("#quantity").val(prodList[i].quantity);
+            $("#product_quantity").val(prodList[i].quantity);
             
             //Disabling the SKU Field
             $("#product_sku").prop("disabled", true);
@@ -207,6 +207,15 @@ function delForm(id)
         }
         i-=1;
     }
+
+    //Clearing Fields
+    clearFields();
+
+    //Enabling the SKU Field
+    $("#product_sku").prop("disabled", false);
+
+    //Changing the Button Value
+    $("#add-Product").html("Add Product");
     
     //Display Function
     display();
